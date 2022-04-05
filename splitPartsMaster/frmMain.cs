@@ -15,9 +15,11 @@ namespace splitPartsMaster
     {
         List<string> foundDupes = new List<string>();  //use this for filtering the where statement on door_allocation
         List<string> highlightDupes = new List<string>();
+        public int skipConfirmBox { get; set; }
         public frmMain()
         {
             InitializeComponent();
+            skipConfirmBox = 0;
             fillGrids();
         }
 
@@ -140,6 +142,12 @@ namespace splitPartsMaster
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (skipConfirmBox == 0)
+            {
+                skipConfirmBox = -1;
+                MessageBox.Show("**PLEASE CHECK THE OTHER TAB BEFORE HITTING DELETE**", "!!!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string sql = "";
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
