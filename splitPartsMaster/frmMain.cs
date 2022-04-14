@@ -39,9 +39,11 @@ namespace splitPartsMaster
                     dgvSplitParts.DataSource = dt;
                 }
 
-                sql = "SELECT * FROM dbo.door_allocation WHERE operation_date > '20210101' AND department = 'Bending' AND cast(door_id as nvarchar(max)) LIKE '%" + txtDoorID.Text + "%'";
+                sql = "SELECT * FROM dbo.door_allocation WHERE operation_date > '20210101' AND department = 'Bending' ";
                 if (foundDupes.Count > 0)
                     sql = sql + " and (";
+                else
+                    sql = sql + " AND cast(door_id as nvarchar(max)) LIKE '%" + txtDoorID.Text + "%'"; //this might conflict with the or statement below so its not a seperate search
                 for (int i = 0; i < foundDupes.Count; i++)
                 {
                     sql = sql + " door_id = " + foundDupes[i] + "  OR";
@@ -51,6 +53,7 @@ namespace splitPartsMaster
                     sql = sql.Substring(0,sql.Length - 3);
                     sql = sql + ")";
                 }
+                sql = sql + " ORDER BY door_id asc";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
